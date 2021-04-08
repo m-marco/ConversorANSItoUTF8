@@ -29,8 +29,9 @@ namespace ConversorANSItoUTF8
             {
                 //string antigoNome = arquivos[i].Name;
                 //string novoNome = antigoNome.ToUpper().Replace(".TXT", "") + "-UTF-8.txt";
-                string conteudo = File.ReadAllText(arquivos[i].FullName);
-                StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, true, Encoding.UTF8, 512);
+                string conteudo = File.ReadAllText(arquivos[i].FullName, Encoding.Latin1);
+
+                StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, false, new UTF8Encoding(false), 512);
 
                 swFromFileTrueUTF8Buffer.Write(conteudo);
                 swFromFileTrueUTF8Buffer.Flush();
