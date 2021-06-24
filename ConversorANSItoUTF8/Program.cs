@@ -27,15 +27,24 @@ namespace ConversorANSItoUTF8
 
             for (int i = 0; i < arquivos.Length; i++)
             {
-                //string antigoNome = arquivos[i].Name;
-                //string novoNome = antigoNome.ToUpper().Replace(".TXT", "") + "-UTF-8.txt";
-                string conteudo = File.ReadAllText(arquivos[i].FullName, Encoding.Latin1);
 
-                StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, false, new UTF8Encoding(false), 512);
+                using StreamReader sr = new StreamReader(arquivos[i].FullName, true);
+                if (sr.Peek() >= 0)
+                {
+                    sr.Read();
+                    if (sr.CurrentEncoding != Encoding.UTF8)
+                    {
+                        Console.WriteLine("The encoding used was {0}.", sr.CurrentEncoding);
+                    }
+                }
 
-                swFromFileTrueUTF8Buffer.Write(conteudo);
-                swFromFileTrueUTF8Buffer.Flush();
-                swFromFileTrueUTF8Buffer.Close();
+                //string conteudo = File.ReadAllText(arquivos[i].FullName, Encoding.Latin1);
+
+                //StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, false, new UTF8Encoding(false), 512);
+
+                //swFromFileTrueUTF8Buffer.Write(conteudo);
+                //swFromFileTrueUTF8Buffer.Flush();
+                //swFromFileTrueUTF8Buffer.Close();
             }
         }
     }
