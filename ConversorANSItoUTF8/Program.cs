@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Ude;
 
 namespace ConversorANSItoUTF8
 {
@@ -27,25 +28,33 @@ namespace ConversorANSItoUTF8
 
             for (int i = 0; i < arquivos.Length; i++)
             {
-
-                using StreamReader sr = new StreamReader(arquivos[i].FullName, true);
-                if (sr.Peek() >= 0)
+                var encoding = GetFileEncoding(arquivos[i].FullName);
+                if (encoding == Encoding.ASCII)
                 {
-                    sr.Read();
-                    if (sr.CurrentEncoding != Encoding.UTF8)
-                    {
-                        Console.WriteLine("The encoding used was {0}.", sr.CurrentEncoding);
-                    }
+                    string conteudo = File.ReadAllText(arquivos[i].FullName, Encoding.Latin1);
+                    StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, false, new UTF8Encoding(false), 512);
+
+                    swFromFileTrueUTF8Buffer.Write(conteudo);
+                    swFromFileTrueUTF8Buffer.Flush();
+                    swFromFileTrueUTF8Buffer.Close();
+
+                    Console.WriteLine("The encoding used was {0}.", encoding);
                 }
-
-                //string conteudo = File.ReadAllText(arquivos[i].FullName, Encoding.Latin1);
-
-                //StreamWriter swFromFileTrueUTF8Buffer = new StreamWriter(arquivos[i].FullName, false, new UTF8Encoding(false), 512);
-
-                //swFromFileTrueUTF8Buffer.Write(conteudo);
-                //swFromFileTrueUTF8Buffer.Flush();
-                //swFromFileTrueUTF8Buffer.Close();
             }
+        }
+
+        public static Encoding GetFileEncoding(string srcFile)
+        {
+            byte[] buffer = File.ReadAllBytes(srcFile);
+            CharsetDetector detector = new CharsetDetector();
+            detector.Feed(buffer, 0, buffer.Length);
+            detector.DataEnd();
+            string encodingName = detector.Charset;
+            if (encodingName == "windows-1252")
+            {
+                return Encoding.ASCII;
+            }
+            return Encoding.GetEncoding(encodingName);
         }
     }
 }
