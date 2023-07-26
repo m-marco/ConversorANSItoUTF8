@@ -54,7 +54,15 @@ namespace ConversorANSItoUTF8
             {
                 return Encoding.ASCII;
             }
+            try
+            {
             return Encoding.GetEncoding(encodingName);
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
